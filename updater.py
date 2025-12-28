@@ -18,10 +18,16 @@ def check_for_updates():
             # Reset hard to ensure local files match GitHub exactly
             subprocess.run(['git', 'reset', '--hard', 'origin/main'], check=True)
             
-            # Restart the app (Assuming you are using a service)
-            # If running manually, you'd need to kill and restart the process
-            subprocess.run(['sudo', 'systemctl', 'restart', 'lidar_counter.service'], check=False)
-            print("Update complete and app restarted.")
+            # Restart BOTH services
+            print("Restarting services...")
+            
+            # Restart ShowMonLidarCounter
+            subprocess.run(['sudo', 'systemctl', 'restart', 'ShowMonLidarCounter.service'], check=False)
+            
+            # Restart LidarCounter
+            subprocess.run(['sudo', 'systemctl', 'restart', 'LidarCounter.service'], check=False)
+            
+            print("Update complete and services restarted.")
         else:
             print("Already up to date.")
             
