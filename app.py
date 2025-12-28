@@ -17,6 +17,8 @@ v1.0
 import json
 import os
 import sqlite3
+import csv
+import io
 import threading
 import time
 from datetime import datetime, timezone
@@ -25,7 +27,7 @@ import subprocess
 import requests
 import paho.mqtt.client as mqtt
 import serial
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, send_file, make_response
 from datetime import datetime
 
 DEBUG_SENSOR = True
@@ -939,6 +941,48 @@ def run_update():
         return jsonify({'status': 'success', 'message': 'Update pulled! Please restart the app or reboot the Pi.'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+# Route to download the raw .db file
+@app.route('/download_db')
+def download_db():
+    # Based on your screenshot, the file is cars.db
+    db_path = '/home/admin/ShowMonLidarCounter/cars.db' 
+    
+    if os.path.exists(db_path):
+        return send_file(db_path, as_attachment=True)
+    else:
+        return "Database file (cars.db) not found.", 404
+
+# Route to download data as a CSV for Excel
+@app.route('/download_csv')
+def download_csv():
+    db_path = '/home/admin/ShowMonLidarCounter/cars.db'
+    if not os.path.exists(db_path):
+        return "Database not found.", 404
+        
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    
+    try:
+        # This assumes your table name is 'counts' or 'detections'
+        # If it throws an error, we can check your table name
+        cursor.execute("SELECT * FROM counts") 
+        rows = cursor.fetchall()
+        column_names = [description[0] for description in cursor.description]
+        
+        si = io.StringIO()
+        cw = csv.writer(si)
+        cw.writerow(column_names)
+        cw.writerows(rows)
+        
+        output = make_response(si.getvalue())
+        output.headers["Content-Disposition"] = "attachment; filename=car_counts_export.csv"
+        output.headers["Content-type"] = "text/csv"
+        return output
+    except Exception as e:
+        return f"Error reading database: {e}", 500
+    finally:
+        conn.close()
     
 # ----------------- MAIN -----------------
 if __name__ == "__main__":
