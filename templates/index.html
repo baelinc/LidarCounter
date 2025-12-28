@@ -202,12 +202,16 @@ canvas {   width: 95%;
   <button class="blue" onclick="location.href='/schedule'">Schedule</button>
   <button id="update-btn" class="btn btn-warning" onclick="updateApp()">Update from GitHub</button><br><br><hr><br>
   <h3>Data Export</h3><br>
-  <button type="button" class="btn btn-primary me-2" onclick="window.location.href='/download_db'">
-      <i class="fas fa-database"></i> Download db File
+  <button class="btn btn-primary" onclick="window.location.href='/download_db'">
+      Download RAW (.db)
   </button>
   
-  <button type="button" class="btn btn-success" onclick="window.location.href='/download_csv'">
-      <i class="fas fa-file-csv"></i> Export to Excel (CSV)
+  <button class="btn btn-success" onclick="window.location.href='/download_csv'">
+      Export to Excel (CSV)
+  </button>
+  
+  <button class="btn btn-danger" onclick="clearData()">
+      Clear All Data
   </button>
 </div>
 <script>
@@ -391,6 +395,14 @@ function updateApp() {
               location.reload(); // Refresh the page to see new code
           });
   }
+}
+
+function clearData() {
+    if(confirm("Are you sure you want to PERMANENTLY delete all car count data?")) {
+        fetch('/clear_db', { method: 'POST' })
+            .then(res => res.json())
+            .then(data => alert(data.message));
+    }
 }
 </script>
 
