@@ -200,7 +200,14 @@ canvas {   width: 95%;
 <div class="center" style="margin-bottom:15px;">
   <button class="blue" onclick="location.href='/config'">Config</button>
   <button class="blue" onclick="location.href='/schedule'">Schedule</button>
-  <button id="update-btn" class="btn btn-warning" onclick="updateApp()">Update from GitHub</button>
+  <button id="update-btn" class="btn btn-warning" onclick="updateApp()">Update from GitHub</button><br><br>
+  <h3>Data Export</h3>
+    <a href="/download_db" class="btn btn-primary">
+        Download Raw Database
+    </a>
+    <a href="/download_csv" class="btn btn-success">
+        Export to Excel (CSV)
+    </a>
 </div>
 <script>
 let hourChart = null;
