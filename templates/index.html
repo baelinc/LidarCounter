@@ -197,32 +197,12 @@ canvas {   width: 95%;
         <button class="red" onclick="toggleManualOverride()">Toggle Manual Override</button>
       </div>
     </div>
-    <div class="card">
-      <h2>GIT HUB</h2>
-
-      <div class="statRow">
-        <button id="update-btn" class="btn btn-warning" onclick="updateApp()">Update from GitHub</button>
-        <script>
-        function updateApp() {
-            if(confirm("This will overwrite local changes and update from GitHub. Continue?")) {
-                const btn = document.getElementById('update-btn');
-                btn.innerText = "Updating...";
-                fetch('/run_update', { method: 'POST' })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message);
-                        location.reload(); // Refresh the page to see new code
-                    });
-            }
-        }
-        </script>
-      </div>
-    </div>
   </div>
 </div>
 <div class="center" style="margin-bottom:15px;">
   <button class="blue" onclick="location.href='/config'">Config</button>
   <button class="blue" onclick="location.href='/schedule'">Schedule</button>
+  <button id="update-btn" class="btn btn-warning" onclick="updateApp()">Update from GitHub</button>
 </div>
 <script>
 let hourChart = null;
@@ -394,6 +374,18 @@ function startLoops() {
 }
 
 startLoops();
+function updateApp() {
+  if(confirm("This will overwrite local changes and update from GitHub. Continue?")) {
+      const btn = document.getElementById('update-btn');
+      btn.innerText = "Updating...";
+      fetch('/run_update', { method: 'POST' })
+          .then(response => response.json())
+          .then(data => {
+              alert(data.message);
+              location.reload(); // Refresh the page to see new code
+          });
+  }
+}
 </script>
 
 </body>
