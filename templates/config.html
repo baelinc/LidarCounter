@@ -268,12 +268,19 @@ loadConfig();
 function performSystemUpdate() {
     if(confirm("This will overwrite local code and restart the services. Continue?")) {
         fetch('/run_update', { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                if(data.status === 'success') location.reload();
+            .then(response => {
+                alert("Update signal sent! The system is restarting. Please wait 10 seconds and refresh.");
+                setTimeout(() => { location.reload(); }, 10000); // Wait for restart
             })
-            .catch(err => alert("Update Error: " + err));
+            .catch(err => {
+                // Ignore 'Failed to fetch' because the server is restarting
+                if (err.message.includes('fetch')) {
+                    alert("Update in progress. Restarting services...");
+                    setTimeout(() => { location.reload(); }, 10000);
+                } else {
+                    alert("Update Error: " + err);
+                }
+            });
     }
 }
 </script>
