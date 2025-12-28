@@ -3,31 +3,28 @@ import os
 
 def check_for_updates():
     try:
-        # Change to the project directory
         os.chdir('/home/admin/ShowMonLidarCounter')
-        
-        # Fetch the latest metadata from GitHub
         subprocess.run(['git', 'fetch'], check=True)
         
-        # Compare local HEAD with the remote main branch
         local_hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip()
         remote_hash = subprocess.check_output(['git', 'rev-parse', 'origin/main']).decode().strip()
         
         if local_hash != remote_hash:
-            print("Changes detected on GitHub. Updating...")
-            # Reset hard to ensure local files match GitHub exactly
+            print("Changes detected. Backing up config.json...")
+            # Copy your local settings to a temporary safe spot
+            subprocess.run(['cp', 'config.json', '/tmp/config.json.bak'], check=False)
+
+            print("Updating code from GitHub...")
             subprocess.run(['git', 'reset', '--hard', 'origin/main'], check=True)
+
+            print("Restoring your settings...")
+            # Move your local settings back over the GitHub default
+            subprocess.run(['cp', '/tmp/config.json.bak', 'config.json'], check=False)
             
-            # Restart BOTH services
             print("Restarting services...")
-            
-            # Restart ShowMonLidarCounter
             subprocess.run(['sudo', 'systemctl', 'restart', 'ShowMonLidarCounter.service'], check=False)
-            
-            # Restart LidarCounter
             subprocess.run(['sudo', 'systemctl', 'restart', 'LidarCounter.service'], check=False)
-            
-            print("Update complete and services restarted.")
+            print("Update successful!")
         else:
             print("Already up to date.")
             
