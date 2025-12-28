@@ -994,6 +994,26 @@ def download_csv():
         return f"Error reading database: {e}", 500
     finally:
         conn.close()
+
+@app.route('/clear_db', methods=['POST'])
+def clear_db():
+    db_path = '/home/admin/ShowMonLidarCounter/cars.db'
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        # This finds all tables and clears them
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        for table in tables:
+            cursor.execute(f"DELETE FROM {table[0]}")
+            
+        conn.commit()
+        return jsonify({'status': 'success', 'message': 'Database cleared successfully!'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    finally:
+        conn.close()
     
 # ----------------- MAIN -----------------
 if __name__ == "__main__":
