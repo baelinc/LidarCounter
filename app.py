@@ -964,21 +964,32 @@ def download_csv():
     cursor = conn.cursor()
     
     try:
-        # This assumes your table name is 'counts' or 'detections'
-        # If it throws an error, we can check your table name
-        cursor.execute("SELECT * FROM counts") 
+        # 1. Automatically find the table name
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
+        
+        if not tables:
+            return "Database is empty (no tables found).", 404
+        
+        # Use the first table found (e.g., 'counts' or 'detections')
+        table_name = tables[0][0]
+        
+        # 2. Fetch the data
+        cursor.execute(f"SELECT * FROM {table_name}")
         rows = cursor.fetchall()
         column_names = [description[0] for description in cursor.description]
         
+        # 3. Create the CSV
         si = io.StringIO()
         cw = csv.writer(si)
         cw.writerow(column_names)
         cw.writerows(rows)
         
         output = make_response(si.getvalue())
-        output.headers["Content-Disposition"] = "attachment; filename=car_counts_export.csv"
+        output.headers["Content-Disposition"] = f"attachment; filename={table_name}_export.csv"
         output.headers["Content-type"] = "text/csv"
         return output
+        
     except Exception as e:
         return f"Error reading database: {e}", 500
     finally:
