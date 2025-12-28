@@ -915,11 +915,20 @@ def get_time():
 @app.route('/sync_time', methods=['POST'])
 def sync_time():
     try:
-        # Updated for newer Pi OS versions using ntpsec
+        # 1. Stop the background time service to unlock the port
+        subprocess.run(['sudo', 'systemctl', 'stop', 'systemd-timesyncd'], check=True)
+        
+        # 2. Force the sync with Google
         subprocess.run(['sudo', 'ntpsec-ntpdate', '-u', 'time.google.com'], check=True)
+        
+        # 3. Start the background service again
+        subprocess.run(['sudo', 'systemctl', 'start', 'systemd-timesyncd'], check=True)
+        
         return jsonify({'status': 'success', 'message': 'Time synchronized successfully!'})
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+    except subprocess.CalledProcessError as e:
+        # If it fails, try to ensure the service is restarted anyway
+        subprocess.run(['sudo', 'systemctl', 'start', 'systemd-timesyncd'])
+        return jsonify({'status': 'error', 'message': f'Sync failed: {str(e)}'}), 500
     
 # ----------------- MAIN -----------------
 if __name__ == "__main__":
