@@ -915,8 +915,8 @@ def get_time():
 @app.route('/sync_time', methods=['POST'])
 def sync_time():
     try:
-        # Requires 'ntpdate' package on the Pi
-        subprocess.run(['sudo', 'ntpdate', '-u', 'time.google.com'], check=True)
+        # Updated for newer Pi OS versions using ntpsec
+        subprocess.run(['sudo', 'ntpsec-ntpdate', '-u', 'time.google.com'], check=True)
         return jsonify({'status': 'success', 'message': 'Time synchronized successfully!'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
