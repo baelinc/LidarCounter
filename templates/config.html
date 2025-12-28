@@ -72,6 +72,15 @@ button.gray { background:#555; color:#fff; }
           Port changes require a restart.
         </div>
       </div>
+
+      <div class="card">
+        <h2>Software Updates (GitHub)</h2>
+          <label for="repo_url" class="form-label">Public Repository URL</label>
+          <input type="text" class="form-control" id="repo_url" value="https://github.com/baelinc/LidarCounter.git">
+          <label for="repo_branch" class="form-label">Branch</label>
+          <input type="text" class="form-control" id="repo_branch" value="main">
+          <button class="btn btn-warning" onclick="performSystemUpdate()">Update System Code</button>
+      </div>
     </div>
 
     <div>
