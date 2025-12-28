@@ -935,10 +935,33 @@ def sync_time():
 @app.route('/run_update', methods=['POST'])
 def run_update():
     try:
-        # Runs the git commands directly
-        subprocess.run(['git', 'fetch'], check=True)
-        subprocess.run(['git', 'reset', '--hard', 'origin/main'], check=True)
-        return jsonify({'status': 'success', 'message': 'Update pulled! Please restart the app or reboot the Pi.'})
+        with open('config.json', 'r') as f:
+            config = json.load(f)
+        
+        # Pull from the new separate section
+        update_cfg = config.get('system_update', {})
+        repo_url = update_cfg.get('repo_url')
+        branch = update_cfg.get('branch', 'main')
+
+        if not repo_url:
+            return jsonify({'status': 'error', 'message': 'repo_url not found in system_update section'}), 400
+
+        os.chdir('/home/admin/ShowMonLidarCounter')
+        
+        # 1. Update the Remote URL to match config
+        subprocess.run(['git', 'remote', 'set-url', 'origin', repo_url], check=True)
+        
+        # 2. Fetch the latest code
+        subprocess.run(['git', 'fetch', '--all'], check=True)
+        
+        # 3. Force the local code to match the public GitHub branch exactly
+        subprocess.run(['git', 'reset', '--hard', f'origin/{branch}'], check=True)
+        
+        # 4. Restart Services (Using confirmed names)
+        subprocess.run(['sudo', 'systemctl', 'restart', 'ShowMonLidarCounter.service'], check=False)
+        subprocess.run(['sudo', 'systemctl', 'restart', 'LidarCounter.service'], check=False)
+
+        return jsonify({'status': 'success', 'message': f'System updated to latest {branch} branch!'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
