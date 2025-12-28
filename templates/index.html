@@ -49,20 +49,32 @@ canvas {   width: 95%;
 
   padding:10px;}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js">
-  // Update the clock every second
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Update the clock every second
     function updatePiClock() {
         fetch('/get_time')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('pi-clock').innerText = data.time;
-            });
+                const clockElement = document.getElementById('pi-clock');
+                if (clockElement) {
+                    clockElement.innerText = data.time;
+                }
+            })
+            .catch(err => console.error("Clock error:", err));
     }
+    
+    // Start the interval
     setInterval(updatePiClock, 1000);
+    // Also run it immediately so we don't wait 1 second for the first update
+    updatePiClock();
 
     // Logic for the Sync Button
     function syncTime() {
         const btn = document.getElementById('sync-btn');
+        if (!btn) return;
+        
         btn.disabled = true;
         btn.innerText = "Syncing...";
 
