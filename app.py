@@ -26,6 +26,7 @@ import requests
 import paho.mqtt.client as mqtt
 import serial
 from flask import Flask, jsonify, request, render_template
+from datetime import datetime
 
 DEBUG_SENSOR = True
 
@@ -905,6 +906,20 @@ def restart_service():
         return {"ok": True}
     except Exception as e:
         return {"ok": False, "error": str(e)}, 500
+
+@app.route('/get_time')
+def get_time():
+    # Returns the current system time to the webpage
+    return jsonify({'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+
+@app.route('/sync_time', methods=['POST'])
+def sync_time():
+    try:
+        # Requires 'ntpdate' package on the Pi
+        subprocess.run(['sudo', 'ntpdate', '-u', 'time.google.com'], check=True)
+        return jsonify({'status': 'success', 'message': 'Time synchronized successfully!'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
     
 # ----------------- MAIN -----------------
 if __name__ == "__main__":
