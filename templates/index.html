@@ -383,18 +383,6 @@ function startLoops() {
 }
 
 startLoops();
-function updateApp() {
-  if(confirm("This will overwrite local changes and update from GitHub. Continue?")) {
-      const btn = document.getElementById('update-btn');
-      btn.innerText = "Updating...";
-      fetch('/run_update', { method: 'POST' })
-          .then(response => response.json())
-          .then(data => {
-              alert(data.message);
-              location.reload(); // Refresh the page to see new code
-          });
-  }
-}
 
 function clearData() {
     if(confirm("Are you sure you want to PERMANENTLY delete all car count data?")) {
