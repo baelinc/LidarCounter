@@ -929,6 +929,16 @@ def sync_time():
         # If it fails, try to ensure the service is restarted anyway
         subprocess.run(['sudo', 'systemctl', 'start', 'systemd-timesyncd'])
         return jsonify({'status': 'error', 'message': f'Sync failed: {str(e)}'}), 500
+
+@app.route('/run_update', methods=['POST'])
+def run_update():
+    try:
+        # Runs the git commands directly
+        subprocess.run(['git', 'fetch'], check=True)
+        subprocess.run(['git', 'reset', '--hard', 'origin/main'], check=True)
+        return jsonify({'status': 'success', 'message': 'Update pulled! Please restart the app or reboot the Pi.'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
     
 # ----------------- MAIN -----------------
 if __name__ == "__main__":
