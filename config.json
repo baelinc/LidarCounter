@@ -30,7 +30,7 @@
     "github_token": ""
   },
   "system_update": {
-    "repo_url": "https://github.com/YOUR_USER/ShowMonLidarCounter.git",
+    "repo_url": "https://github.com/baelinc/LidarCounter.git",
     "branch": "main"
   }
 }
