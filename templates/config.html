@@ -22,6 +22,7 @@ button {
   border:none; border-radius:6px; cursor:pointer;
 }
 button.blue { background:#007bff; color:#fff; }
+button.red { background:#c00000; color:white; }
 button.gray { background:#555; color:#fff; }
 .smallNote { font-size:12px; color:#aaa; }
 .grid2 {
@@ -79,7 +80,7 @@ button.gray { background:#555; color:#fff; }
           <input type="text" class="form-control" id="repo_url" value="https://github.com/baelinc/LidarCounter.git">
           <label for="repo_branch" class="form-label">Branch</label>
           <input type="text" class="form-control" id="repo_branch" value="main">
-          <button class="btn btn-warning" onclick="performSystemUpdate()">Update System Code</button>
+          <button class="red" onclick="performSystemUpdate()">Update System Code</button>
       </div>
     </div>
 
