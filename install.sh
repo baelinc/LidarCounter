@@ -1,16 +1,16 @@
 #!/bin/bash
 
-#ShowMon Lidar Counter
-#Written by Kevin Rhodus // LightShowNetwork.com
-#kevin@lightshownetwork.com
+#Lidar Counter
+#Written by Kevin Rhodus // Forked and changes made by Johnathan Evans
+#christmas@onthehill.us
 #Version 1.0.0
 
 set -e
 
-echo "Installing ShowMon Lidar Car Counter..."
+echo "Installing Lidar Car Counter..."
 
-PROJECT_DIR="/home/admin/ShowMonLidarCounter"
-VENV_DIR="/home/admin/ShowMonLidarCounter/venv"
+PROJECT_DIR="/home/admin/LidarCounter"
+VENV_DIR="/home/admin/LidarCounter/venv"
 UART_CFG="/boot/firmware/config.txt"
 
 # -------------------------
@@ -72,18 +72,18 @@ fi
 # -------------------------
 # Allow app to restart its own systemd service
 # -------------------------
-SUDOERS_FILE="/etc/sudoers.d/showmon-lidar"
+SUDOERS_FILE="/etc/sudoers.d/lidar"
 
 if [ ! -f "$SUDOERS_FILE" ]; then
   echo "Configuring sudo permissions for service restart"
 
   sudo tee "$SUDOERS_FILE" >/dev/null <<EOF
-admin ALL=NOPASSWD: /bin/systemctl restart ShowMonLidarCounter
+admin ALL=NOPASSWD: /bin/systemctl restart LidarCounter
 EOF
 
   sudo chmod 440 "$SUDOERS_FILE"
 else
-  echo "Sudoers rule for ShowMonLidarCounter already exists"
+  echo "Sudoers rule for LidarCounter already exists"
 fi
 # -------------------------
 # Python virtual environment
@@ -103,14 +103,14 @@ pip install -r requirements.txt
 # -------------------------
 # systemd service
 # -------------------------
-if [ -f "systemd/ShowMonLidarCounter.service" ]; then
+if [ -f "systemd/LidarCounter.service" ]; then
   echo "Installing systemd service"
-  sudo cp systemd/ShowMonLidarCounter.service /etc/systemd/system/ShowMonLidarCounter.service
+  sudo cp systemd/LidarCounter.service /etc/systemd/system/LidarCounter.service
   sudo systemctl daemon-reload
-  sudo systemctl enable ShowMonLidarCounter
-  sudo systemctl restart ShowMonLidarCounter
+  sudo systemctl enable LidarCounter
+  sudo systemctl restart LidarCounter
 else
-  echo "WARNING: systemd/ShowMonLidarCounter.service not found — skipping service install"
+  echo "WARNING: systemd/LidarCounter.service not found — skipping service install"
 fi
 
 # -------------------------
