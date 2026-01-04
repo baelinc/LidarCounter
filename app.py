@@ -1,18 +1,4 @@
 #!/usr/bin/env python3
-"""                                                                                                   
-          ░██████   ░██     ░██   ░██████   ░██       ░██ ░███     ░███   ░██████   ░███    ░██ 
-         ░██   ░██  ░██     ░██  ░██   ░██  ░██       ░██ ░████   ░████  ░██   ░██  ░████   ░██ 
-        ░██         ░██     ░██ ░██     ░██ ░██  ░██  ░██ ░██░██ ░██░██ ░██     ░██ ░██░██  ░██ 
-         ░████████  ░██████████ ░██     ░██ ░██ ░████ ░██ ░██ ░████ ░██ ░██     ░██ ░██ ░██ ░██ 
-                ░██ ░██     ░██ ░██     ░██ ░██░██ ░██░██ ░██  ░██  ░██ ░██     ░██ ░██  ░██░██ 
-         ░██   ░██  ░██     ░██  ░██   ░██  ░████   ░████ ░██       ░██  ░██   ░██  ░██   ░████ 
-          ░██████   ░██     ░██   ░██████   ░███     ░███ ░██       ░██   ░██████   ░██    ░███ 
-
-
-Light Show Network ShowMon Lidar Car Counter
-v1.0
-
-"""
 
 import json
 import os
@@ -900,7 +886,7 @@ def restart_service():
                 "/bin/systemctl",
                 "restart",
                 "--no-block",
-                "ShowMonLidarCounter"
+                "LidarCounter"
             ],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
@@ -946,7 +932,7 @@ def run_update():
         if not repo_url:
             return jsonify({'status': 'error', 'message': 'repo_url not found in system_update section'}), 400
 
-        os.chdir('/home/admin/ShowMonLidarCounter')
+        os.chdir('/home/admin/LidarCounter')
         
         # 1. Update the Remote URL to match config
         subprocess.run(['git', 'remote', 'set-url', 'origin', repo_url], check=True)
@@ -958,7 +944,7 @@ def run_update():
         subprocess.run(['git', 'reset', '--hard', f'origin/{branch}'], check=True)
         
         # 4. Restart Services (Using confirmed names)
-        subprocess.run(['sudo', 'systemctl', 'restart', 'ShowMonLidarCounter.service'], check=False)
+        subprocess.run(['sudo', 'systemctl', 'restart', 'LidarCounter.service'], check=False)
         subprocess.run(['sudo', 'systemctl', 'restart', 'LidarCounter.service'], check=False)
 
         return jsonify({'status': 'success', 'message': f'System updated to latest {branch} branch!'})
@@ -969,7 +955,7 @@ def run_update():
 @app.route('/download_db')
 def download_db():
     # Based on your screenshot, the file is cars.db
-    db_path = '/home/admin/ShowMonLidarCounter/cars.db' 
+    db_path = '/home/admin/LidarCounter/cars.db' 
     
     if os.path.exists(db_path):
         return send_file(db_path, as_attachment=True)
@@ -979,7 +965,7 @@ def download_db():
 # Route to download data as a CSV for Excel
 @app.route('/download_csv')
 def download_csv():
-    db_path = '/home/admin/ShowMonLidarCounter/cars.db'
+    db_path = '/home/admin/LidarCounter/cars.db'
     if not os.path.exists(db_path):
         return "Database not found.", 404
         
@@ -1020,7 +1006,7 @@ def download_csv():
 
 @app.route('/clear_db', methods=['POST'])
 def clear_db():
-    db_path = '/home/admin/ShowMonLidarCounter/cars.db'
+    db_path = '/home/admin/LidarCounter/cars.db'
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
