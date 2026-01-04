@@ -15,6 +15,6 @@ Pin 10 - RXD
 - Create used named admin with a password of your choice
 - Run `sudo apt update`
 - Run `sudo apt install git`
-- Run `git clone https://github.com/krhodus/ShowMonLidarCounter.git`
+- Run `git clone https://github.com/baelinc/LidarCounter.git`
 - Run `cd ShowMonLidarCounter`
 - Run `sudo bash install.sh`
