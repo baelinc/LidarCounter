@@ -16,5 +16,5 @@ Pin 10 - RXD
 - Run `sudo apt update`
 - Run `sudo apt install git`
 - Run `git clone https://github.com/baelinc/LidarCounter.git`
-- Run `cd ShowMonLidarCounter`
+- Run `cd LidarCounter`
 - Run `sudo bash install.sh`
