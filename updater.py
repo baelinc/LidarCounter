@@ -3,7 +3,7 @@ import os
 
 def check_for_updates():
     try:
-        os.chdir('/home/admin/ShowMonLidarCounter')
+        os.chdir('/home/admin/LidarCounter')
         subprocess.run(['git', 'fetch'], check=True)
         
         local_hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip()
@@ -22,7 +22,6 @@ def check_for_updates():
             subprocess.run(['cp', '/tmp/config.json.bak', 'config.json'], check=False)
             
             print("Restarting services...")
-            subprocess.run(['sudo', 'systemctl', 'restart', 'ShowMonLidarCounter.service'], check=False)
             subprocess.run(['sudo', 'systemctl', 'restart', 'LidarCounter.service'], check=False)
             print("Update successful!")
         else:
