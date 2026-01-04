@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECT_DIR="/home/admin/ShowMonLidarCounter"
+PROJECT_DIR="/home/admin/LidarCounter"
 BACKUP_PATH="/tmp/config.json.bak"
 
 echo "--- Starting System Update ---"
@@ -28,8 +28,7 @@ fi
 
 # 5. Restart Services
 echo "Restarting services..."
-sudo systemctl restart ShowMonLidarCounter.service
 sudo systemctl restart LidarCounter.service
 
 echo "--- Update Complete! ---"
-sudo systemctl status ShowMonLidarCounter.service --no-pager
+sudo systemctl status LidarCounter.service --no-pager
